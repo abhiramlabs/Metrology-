@@ -8,12 +8,15 @@ document.addEventListener("DOMContentLoaded", () => {
   // -------------------------------------------------------------
   // 1. ACTIVE MULTI-ORIGIN PROBING ENGINE (Solves Localhost & Offline Errors)
   // -------------------------------------------------------------
-  let API_BASE = "http://" + (window.location.hostname || "127.0.0.1") + ":8000";
+  let API_BASE = (window.location.port === "8000" || window.location.protocol === "https:") 
+    ? window.location.origin 
+    : "http://" + (window.location.hostname || "127.0.0.1") + ":8000";
 
   async function resolveActiveBackend() {
     const port = "8000";
     const host = window.location.hostname || "127.0.0.1";
     const probeTargets = [
+      window.location.origin,
       "http://" + host + ":" + port,
       "http://127.0.0.1:" + port,
       "http://localhost:" + port
@@ -1715,10 +1718,11 @@ document.addEventListener("DOMContentLoaded", () => {
   async function checkBackendHealth() {
     const pill = document.getElementById("backendStatusPill");
     try {
-      const res = await fetch("http://127.0.0.1:8000/api/v1/health", { method: "GET" });
+      const healthUrl = (API_BASE || window.location.origin || "http://127.0.0.1:8000") + "/api/v1/health";
+      const res = await fetch(healthUrl, { method: "GET" });
       if (res.ok) {
         if (pill) {
-          pill.textContent = "● Backend: Online (Port 8000)";
+          pill.textContent = "● Backend: Online";
           pill.style.color = "#16a34a";
           pill.style.borderColor = "rgba(22, 163, 74, 0.3)";
           pill.style.background = "rgba(22, 163, 74, 0.12)";

@@ -1,0 +1,43 @@
+{
+  "version": 2,
+  "builds": [
+    {
+      "src": "backend/main.py",
+      "use": "@vercel/python"
+    },
+    {
+      "src": "FRONTEND/**",
+      "use": "@vercel/static"
+    }
+  ],
+  "routes": [
+    {
+      "src": "/api/(.*)",
+      "dest": "backend/main.py"
+    },
+    {
+      "src": "/docs",
+      "dest": "backend/main.py"
+    },
+    {
+      "src": "/openapi.json",
+      "dest": "backend/main.py"
+    },
+    {
+      "src": "/reports/(.*)",
+      "dest": "backend/main.py"
+    },
+    {
+      "src": "/uploads/(.*)",
+      "dest": "backend/main.py"
+    },
+    {
+      "src": "/presets/(.*)",
+      "dest": "backend/main.py"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "FRONTEND/"
+    }
+  ]
+}

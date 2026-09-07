@@ -1773,4 +1773,12 @@ def get_packaging_presets():
             "highlight": "Violation: Missing Country of Origin under Rule 6(1)(m) & BIS registration",
             "image_url": "/presets/earbuds_violation.jpg"
         }
-    ]
+    ]
+
+# ---------------------------------------------------------------------------
+# MOUNT FRONTEND (Serves index.html, style.css, script.js on single port 8000)
+# ---------------------------------------------------------------------------
+frontend_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "FRONTEND"))
+if os.path.exists(frontend_dir):
+    app.mount("/", StaticFiles(directory=frontend_dir, html=True), name="frontend")
+

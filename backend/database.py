@@ -3,21 +3,26 @@ from typing import Optional
 from sqlalchemy import create_engine, event, Column, Integer, String, Float, DateTime, JSON, Boolean, Text
 from sqlalchemy.orm import declarative_base, sessionmaker
 
-DATABASE_URL = "sqlite:///./inspections.db"
+import os
 
-engine = create_engine(
-    DATABASE_URL, 
-    connect_args={"check_same_thread": False, "timeout": 20},
-    pool_pre_ping=True
-)
+DATABASE_URL = os.getenv("DATABASE_URL", "sqlite:///./inspections.db")
 
-# Enable WAL Mode (Write-Ahead Logging) to eliminate SQLite database locks during concurrent scans
-@event.listens_for(engine, "connect")
-def set_sqlite_pragma(dbapi_connection, connection_record):
-    cursor = dbapi_connection.cursor()
-    cursor.execute("PRAGMA journal_mode=WAL")
-    cursor.execute("PRAGMA synchronous=NORMAL")
-    cursor.close()
+if DATABASE_URL.startswith("sqlite"):
+    engine = create_engine(
+        DATABASE_URL, 
+        connect_args={"check_same_thread": False, "timeout": 20},
+        pool_pre_ping=True
+    )
+    @event.listens_for(engine, "connect")
+    def set_sqlite_pragma(dbapi_connection, connection_record):
+        cursor = dbapi_connection.cursor()
+        cursor.execute("PRAGMA journal_mode=WAL")
+        cursor.execute("PRAGMA synchronous=NORMAL")
+        cursor.close()
+else:
+    if DATABASE_URL.startswith("postgres://"):
+        DATABASE_URL = DATABASE_URL.replace("postgres://", "postgresql://", 1)
+    engine = create_engine(DATABASE_URL, pool_pre_ping=True, pool_size=5, max_overflow=10)
 
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 Base = declarative_base()

@@ -1,3 +1,16 @@
+---
+title: Legal Metrology AI Enforcement Gateway
+emoji: ⚖️
+colorFrom: blue
+colorTo: indigo
+sdk: streamlit
+sdk_version: 1.40.0
+app_file: app.py
+pinned: false
+license: apache-2.0
+short_description: Legal Metrology PCR 2011 Statutory Compliance AI Engine
+---
+
 # National Legal Metrology AI Enforcement Gateway
 ### Smart India Hackathon 2026 — Problem Statement #26034
 > **"Software System to check compliance of Packaged Commodities under Legal Metrology (Packaged Commodities) Rules, 2011 by scanning products, images and labels."**
